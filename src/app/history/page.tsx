@@ -132,7 +132,11 @@ export default function HistoryPage() {
 
   const deleteUrl = async (shortCode: string) => {
     try {
-      setDeletingItems(prev => new Set([...prev, shortCode]));
+      setDeletingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.add(shortCode);
+        return newSet;
+      });
       setShowDeleteConfirm(null);
 
       const response = await fetch(`/api/delete/${shortCode}`, {
