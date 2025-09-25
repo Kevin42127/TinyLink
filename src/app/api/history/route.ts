@@ -6,9 +6,12 @@ export const dynamic = 'force-dynamic'; // 強制動態渲染
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('History API called');
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
+    
+    console.log('Parameters:', { limit, offset });
 
     // 驗證參數
     if (limit > 100) {
@@ -19,7 +22,9 @@ export async function GET(request: NextRequest) {
     }
 
     // 獲取最近的短網址記錄
+    console.log('Fetching history from database...');
     const history = await dbQueries.getRecentUrls(limit, offset);
+    console.log('History fetched:', history.length, 'items');
 
     // 格式化數據，添加短網址
     const formattedHistory = history.map((item: any) => ({
@@ -34,9 +39,11 @@ export async function GET(request: NextRequest) {
     }));
 
     // 獲取總數
+    console.log('Fetching total count...');
     const totalCount = await dbQueries.getTotalUrlCount();
+    console.log('Total count:', totalCount);
 
-    return NextResponse.json({
+    const response = {
       success: true,
       data: {
         history: formattedHistory,
@@ -47,7 +54,10 @@ export async function GET(request: NextRequest) {
           hasMore: offset + limit < totalCount,
         },
       },
-    });
+    };
+    
+    console.log('Returning response:', response);
+    return NextResponse.json(response);
 
   } catch (error) {
     console.error('獲取歷史記錄錯誤:', error);

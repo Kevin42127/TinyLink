@@ -51,7 +51,13 @@ export default function HistoryPage() {
       setError(null);
 
       const response = await fetch(`/api/history?limit=${pagination.limit}&offset=${offset}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data: HistoryResponse = await response.json();
+      console.log('History API response:', data);
 
       if (data.success) {
         if (append) {
@@ -61,11 +67,11 @@ export default function HistoryPage() {
         }
         setPagination(data.data.pagination);
       } else {
-        setError('獲取歷史記錄失敗');
+        setError(data.error || '獲取歷史記錄失敗');
       }
     } catch (err) {
       console.error('獲取歷史記錄錯誤:', err);
-      setError('網路錯誤，請稍後再試');
+      setError(`網路錯誤，請稍後再試: ${err instanceof Error ? err.message : '未知錯誤'}`);
     } finally {
       setLoading(false);
     }
