@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbQueries } from '@/lib/database';
+import { getDatabase } from '@/lib/database-selector';
 
 export const dynamic = 'force-dynamic'; // 強制動態渲染
 
 export async function DELETE(request: NextRequest) {
   try {
+    // 獲取數據庫實例
+    const dbQueries = await getDatabase();
+    
     // 獲取刪除前的總數
     const totalCount = await dbQueries.getTotalUrlCount();
     

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { sanitizeUrl, validateUrl } from '@/lib/validation';
 import { createShortCode, validateShortCode } from '@/lib/shortcode';
-import { dbQueries } from '@/lib/database';
+import { getDatabase } from '@/lib/database-selector';
 import { generateShortUrl } from '@/lib/url';
 
 export const dynamic = 'force-dynamic'; // 強制動態渲染
@@ -22,6 +22,9 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { urls, expiresIn } = batchShortenSchema.parse(body);
+
+    // 獲取數據庫實例
+    const dbQueries = await getDatabase();
 
     const results = [];
     const errors = [];

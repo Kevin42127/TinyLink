@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbQueries } from '@/lib/database';
+import { getDatabase } from '@/lib/database-selector';
 import { validateShortCode } from '@/lib/shortcode';
 
 export const dynamic = 'force-dynamic'; // 強制動態渲染
@@ -19,6 +19,9 @@ export async function DELETE(
       );
     }
 
+    // 獲取數據庫實例
+    const dbQueries = await getDatabase();
+    
     // 檢查短碼是否存在
     const urlData = await dbQueries.getUrlByCode(code);
     
