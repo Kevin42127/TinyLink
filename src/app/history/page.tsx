@@ -18,7 +18,7 @@ interface HistoryItem {
 
 interface HistoryResponse {
   success: boolean;
-  data: {
+  data?: {
     history: HistoryItem[];
     pagination: {
       limit: number;
@@ -27,6 +27,7 @@ interface HistoryResponse {
       hasMore: boolean;
     };
   };
+  error?: string;
 }
 
 export default function HistoryPage() {
@@ -59,9 +60,9 @@ export default function HistoryPage() {
       const data: HistoryResponse = await response.json();
       console.log('History API response:', data);
 
-      if (data.success) {
+      if (data.success && data.data) {
         if (append) {
-          setHistory(prev => [...prev, ...data.data.history]);
+          setHistory(prev => [...prev, ...data.data!.history]);
         } else {
           setHistory(data.data.history);
         }
