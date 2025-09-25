@@ -5,6 +5,8 @@ import { createShortCode, validateShortCode } from '@/lib/shortcode';
 import { dbQueries } from '@/lib/database';
 import { generateShortUrl } from '@/lib/url';
 
+export const dynamic = 'force-dynamic'; // 強制動態渲染
+
 // 批量短網址 schema
 const batchShortenSchema = z.object({
   urls: z.array(z.object({

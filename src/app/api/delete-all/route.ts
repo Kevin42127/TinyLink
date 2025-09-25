@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbQueries } from '@/lib/database';
 
+export const dynamic = 'force-dynamic'; // 強制動態渲染
+
 export async function DELETE(request: NextRequest) {
   try {
     // 獲取刪除前的總數

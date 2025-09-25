@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { dbQueries } from '@/lib/database';
 import { validateShortCode } from '@/lib/shortcode';
 
+export const dynamic = 'force-dynamic'; // 強制動態渲染
+
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { code: string } }
