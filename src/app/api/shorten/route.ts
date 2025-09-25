@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createShortCode, validateShortCode } from '@/lib/shortcode';
 import { validateUrl, sanitizeUrl, createShortUrlSchema } from '@/lib/validation';
-import { dbQueries } from '@/lib/database';
+import { getDatabase } from '@/lib/database-selector';
 import { generateShortUrl } from '@/lib/url';
 
 export const dynamic = 'force-dynamic'; // 強制動態渲染
@@ -79,7 +79,8 @@ export async function POST(request: NextRequest) {
       expiresAt = expirationDate.toISOString().replace('T', ' ').replace('Z', '');
     }
 
-    // 存儲到數據庫
+    // 獲取數據庫實例並存儲數據
+    const dbQueries = await getDatabase();
     try {
       await dbQueries.insertShortUrl(
         shortCode,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { dbQueries } from '@/lib/database';
+import { getDatabase } from '@/lib/database-selector';
 import { generateShortUrl } from '@/lib/url';
 
 export const dynamic = 'force-dynamic'; // 強制動態渲染
@@ -20,6 +20,9 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // 獲取數據庫實例
+    const dbQueries = await getDatabase();
 
     // 獲取最近的短網址記錄
     console.log('Fetching history from database...');
