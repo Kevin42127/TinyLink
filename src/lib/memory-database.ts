@@ -41,6 +41,10 @@ class MemoryDatabase {
     return this.urls.find(url => url.short_code === code) || null;
   }
 
+  async checkCodeExists(code: string): Promise<boolean> {
+    return this.urls.some(url => url.short_code === code);
+  }
+
   async incrementClickCount(code: string): Promise<void> {
     const url = this.urls.find(url => url.short_code === code);
     if (url) {
@@ -88,6 +92,10 @@ export const memoryDbQueries = {
 
   getUrlByCode: (code: string) => {
     return memoryDb.getUrlByCode(code);
+  },
+
+  checkCodeExists: (code: string) => {
+    return memoryDb.checkCodeExists(code);
   },
 
   incrementClickCount: (code: string) => {

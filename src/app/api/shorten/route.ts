@@ -33,6 +33,9 @@ export async function POST(request: NextRequest) {
     // 清理 URL
     const cleanUrl = sanitizeUrl(url);
 
+    // 獲取數據庫實例
+    const dbQueries = await getDatabase();
+
     // 確定短碼
     let shortCode: string;
     
@@ -79,8 +82,7 @@ export async function POST(request: NextRequest) {
       expiresAt = expirationDate.toISOString().replace('T', ' ').replace('Z', '');
     }
 
-    // 獲取數據庫實例並存儲數據
-    const dbQueries = await getDatabase();
+    // 存儲數據到數據庫
     try {
       await dbQueries.insertShortUrl(
         shortCode,
