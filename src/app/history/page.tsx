@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ExternalLink, Copy, Calendar, Clock, Eye, RefreshCw, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import Link from 'next/link';
@@ -45,7 +45,7 @@ export default function HistoryPage() {
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
-  const fetchHistory = async (offset = 0, append = false) => {
+  const fetchHistory = useCallback(async (offset = 0, append = false) => {
     try {
       setLoading(true);
       setError(null);
@@ -69,11 +69,11 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.limit]);
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const loadMore = () => {
     if (pagination.hasMore && !loading) {

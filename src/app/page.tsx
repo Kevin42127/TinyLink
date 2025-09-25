@@ -6,6 +6,7 @@ import UrlForm from '@/components/UrlForm';
 import UrlResult from '@/components/UrlResult';
 import { RefreshCw } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HomePage() {
   const [result, setResult] = useState(null);
@@ -30,10 +31,12 @@ export default function HomePage() {
                 animate={{ opacity: 1, x: 0 }}
                 className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity duration-200"
               >
-                <img 
+                <Image 
                   src="/logo1.png" 
                   alt="TinyLink Logo" 
-                  className="w-8 h-8 rounded-lg"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
                 />
                 <span className="text-xl font-bold text-gray-900">TinyLink</span>
               </motion.div>

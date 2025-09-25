@@ -155,7 +155,7 @@ export default function TermsPage() {
               </div>
               <div className="space-y-4 text-gray-700">
                 <p>
-                  <strong>本服務按"現狀"免費提供，我們不保證：</strong>
+                  <strong>本服務按&ldquo;現狀&rdquo;免費提供，我們不保證：</strong>
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
                   <li>服務的連續性或無中斷性</li>

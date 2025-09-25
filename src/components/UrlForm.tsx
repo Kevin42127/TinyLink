@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Link, Calendar, FileText, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 interface UrlFormProps {
   onSuccess: (data: any) => void;
@@ -93,10 +94,12 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
         >
-          <img 
+          <Image 
             src="/logo1.png" 
             alt="TinyLink Logo" 
-            className="w-16 h-16 rounded-full"
+            width={64}
+            height={64}
+            className="rounded-full"
           />
         </motion.div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
