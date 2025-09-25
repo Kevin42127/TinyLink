@@ -28,10 +28,10 @@ class MemoryDatabase {
       short_code: shortCode,
       original_url: originalUrl,
       created_at: new Date().toISOString(),
-      expires_at: expiresAt,
+      expires_at: expiresAt || undefined,
       click_count: 0,
-      title: title || null,
-      description: description || null,
+      title: title || undefined,
+      description: description || undefined,
     };
 
     this.urls.push(record);
