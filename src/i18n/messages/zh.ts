@@ -106,11 +106,7 @@ const zh = {
   "history.dialog.cancel": "取消",
   "history.dialog.deleting": "刪除中...",
   "history.dialog.confirm": "確認刪除",
-  "history.dialog.bulk.title": "確認刪除所有記錄",
-  "history.dialog.bulk.messagePrefix": "確定要刪除所有",
-  "history.dialog.bulk.messageSuffix": "條歷史記錄嗎？",
-  "history.dialog.bulk.warning": "⚠️ 此操作無法撤銷，所有短網址將永久失效！",
-  "history.dialog.bulk.confirm": "確認刪除全部",
+  
   "common.copy": "複製",
   "common.copied": "已複製",
   "common.unknownError": "未知錯誤",
@@ -175,6 +171,7 @@ const zh = {
   "history.dialog.bulk.message.prefix": "確定要刪除所有",
   "history.dialog.bulk.message.suffix": "條歷史記錄嗎？",
   "history.dialog.bulk.warning": "⚠️ 此操作無法撤銷，所有短網址將永久失效！",
+  "history.dialog.bulk.confirm": "確認刪除全部",
   "history.dialog.bulk.cancel": "取消",
   "history.dialog.bulk.deleting": "刪除中...",
 
