@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Loader2, AlertCircle, ExternalLink } from 'lucide-react';
+import { useI18n } from '@/i18n/I18nProvider';
 
 export default function RedirectPage() {
+  const { t } = useI18n();
   const params = useParams();
   const [status, setStatus] = useState<'loading' | 'redirecting' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -15,13 +17,13 @@ export default function RedirectPage() {
     
     if (!code) {
       setStatus('error');
-      setErrorMessage('無效的短網址');
+      setErrorMessage(t('code.invalidUrl'));
       return;
     }
 
     // 直接重定向到 API 路由
     window.location.href = `/api/${code}`;
-  }, [params.code]);
+  }, [params.code, t]);
 
   if (status === 'loading' || status === 'redirecting') {
     return (
@@ -37,10 +39,10 @@ export default function RedirectPage() {
             className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full mx-auto mb-6"
           />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            正在跳轉...
+            {t('code.loading.title')}
           </h2>
           <p className="text-gray-600">
-            請稍候，即將為您跳轉到目標頁面
+            {t('code.loading.desc')}
           </p>
         </motion.div>
       </div>
@@ -65,11 +67,11 @@ export default function RedirectPage() {
           </motion.div>
           
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            短網址無效
+            {t('code.error.title')}
           </h1>
           
           <p className="text-gray-600 mb-8">
-            {errorMessage || '抱歉，找不到您要訪問的頁面。該短網址可能已過期或不存在。'}
+            {errorMessage || t('code.error.desc')}
           </p>
           
           <div className="space-y-4">
@@ -78,11 +80,11 @@ export default function RedirectPage() {
               className="inline-flex items-center btn-primary px-6 py-3"
             >
               <ExternalLink className="w-5 h-5 mr-2" />
-              返回首頁
+              {t('common.backHome')}
             </motion.a>
             
             <div className="text-sm text-gray-500">
-              <p>如果您認為這是個錯誤，請檢查鏈接是否正確</p>
+              <p>{t('code.error.help')}</p>
             </div>
           </div>
         </motion.div>

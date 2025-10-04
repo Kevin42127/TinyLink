@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, ExternalLink, Calendar, Eye } from 'lucide-react';
+import { useI18n } from '@/i18n/I18nProvider';
 
 interface UrlResultProps {
   data: {
@@ -16,6 +17,7 @@ interface UrlResultProps {
 }
 
 export default function UrlResult({ data }: UrlResultProps) {
+  const { t, locale } = useI18n();
   const [copied, setCopied] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -62,7 +64,8 @@ export default function UrlResult({ data }: UrlResultProps) {
 
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('zh-TW', {
+    const loc = locale === 'en' ? 'en-US' : 'zh-TW';
+    return new Date(dateString).toLocaleDateString(loc, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -88,7 +91,7 @@ export default function UrlResult({ data }: UrlResultProps) {
           <Check className="w-8 h-8 text-green-600" />
         </motion.div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          短網址生成成功！
+          {t('result.success.title')}
         </h2>
         {data.title && (
           <p className="text-lg text-gray-700 font-medium">{data.title}</p>
@@ -102,7 +105,7 @@ export default function UrlResult({ data }: UrlResultProps) {
       <div className="bg-gray-50 rounded-lg p-4 mb-6">
         <div className="flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-700 mb-1">短網址</p>
+            <p className="text-sm font-medium text-gray-700 mb-1">{t('result.shortUrl.label')}</p>
             <p className="text-lg font-mono text-primary-600 break-all">
               {data.shortUrl}
             </p>
@@ -114,12 +117,12 @@ export default function UrlResult({ data }: UrlResultProps) {
             {copied ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
-                已複製
+                {t('result.copy.copied')}
               </>
             ) : (
               <>
                 <Copy className="w-4 h-4 mr-2" />
-                複製
+                {t('result.copy.copy')}
               </>
             )}
           </motion.button>
@@ -128,7 +131,7 @@ export default function UrlResult({ data }: UrlResultProps) {
 
       {/* 原鏈接 */}
       <div className="mb-6">
-        <p className="text-sm font-medium text-gray-700 mb-2">原始鏈接</p>
+        <p className="text-sm font-medium text-gray-700 mb-2">{t('result.original.label')}</p>
         <div className="flex items-center justify-between bg-white border rounded-lg p-3">
           <p className="text-gray-600 break-all flex-1 min-w-0 mr-3">
             {data.originalUrl}
@@ -150,7 +153,7 @@ export default function UrlResult({ data }: UrlResultProps) {
           <div className="flex items-center text-orange-600 bg-orange-50 rounded-lg p-3">
             <Calendar className="w-5 h-5 mr-2" />
             <span className="text-sm font-medium">
-              將於 {formatDate(data.expiresAt)} 過期
+              {locale === 'en' ? `${t('result.expires.prefix')} ${formatDate(data.expiresAt)}` : `${t('result.expires.prefix')} ${formatDate(data.expiresAt)} 過期`}
             </span>
           </div>
         </div>
@@ -161,9 +164,9 @@ export default function UrlResult({ data }: UrlResultProps) {
       <div className="mb-6">
         <div className="flex items-center justify-between bg-white border rounded-lg p-3">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-700 mb-1">URL 預覽</p>
+            <p className="text-sm font-medium text-gray-700 mb-1">{t('result.preview.label')}</p>
             <p className="text-sm text-gray-600">
-              {showPreview ? '點擊查看目標網站' : '點擊預覽目標網站'}
+              {showPreview ? t('result.preview.text.show') : t('result.preview.text.hide')}
             </p>
           </div>
                   <motion.button
@@ -176,7 +179,7 @@ export default function UrlResult({ data }: UrlResultProps) {
             ) : (
               <Eye className="w-4 h-4 mr-2" />
             )}
-            {previewLoading ? '檢查中...' : showPreview ? '隱藏預覽' : '預覽'}
+            {previewLoading ? t('result.preview.button.checking') : showPreview ? t('result.preview.button.hide') : t('result.preview.button.show')}
           </motion.button>
         </div>
         
@@ -187,7 +190,7 @@ export default function UrlResult({ data }: UrlResultProps) {
             className="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg"
           >
             <p className="text-green-800 text-sm">
-              ✅ 目標網站可正常訪問
+              {t('result.preview.ok')}
             </p>
             <a
               href={data.originalUrl}
@@ -196,7 +199,7 @@ export default function UrlResult({ data }: UrlResultProps) {
               className="inline-flex items-center mt-2 text-green-700 hover:text-green-800"
             >
               <ExternalLink className="w-4 h-4 mr-1" />
-              在新視窗中打開
+              {t('result.preview.newWindow')}
             </a>
           </motion.div>
         )}
@@ -208,7 +211,7 @@ export default function UrlResult({ data }: UrlResultProps) {
             className="mt-3 p-4 bg-red-50 border border-red-200 rounded-lg"
           >
             <p className="text-red-800 text-sm">
-              ⚠️ 無法預覽目標網站，請手動檢查鏈接
+              {t('result.preview.error')}
             </p>
           </motion.div>
         )}
@@ -221,7 +224,7 @@ export default function UrlResult({ data }: UrlResultProps) {
           className="btn-primary flex items-center justify-center py-3 px-6"
         >
           <ExternalLink className="w-5 h-5 mr-2" />
-          測試短網址
+          {t('result.test')}
         </motion.button>
       </div>
     </motion.div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Upload, Download, Copy, Check, ExternalLink } from 'lucide-react';
+import { useI18n } from '@/i18n/I18nProvider';
 
 interface BatchUrl {
   url: string;
@@ -27,6 +28,7 @@ interface BatchError {
 }
 
 export default function BatchUrlForm() {
+  const { t } = useI18n();
   const [urls, setUrls] = useState<BatchUrl[]>([
     { url: '', customCode: '', title: '', description: '' }
   ]);
@@ -65,7 +67,7 @@ export default function BatchUrlForm() {
       const validUrls = urls.filter(item => item.url.trim());
       
       if (validUrls.length === 0) {
-        alert('請至少輸入一個有效的 URL');
+        alert(t('batch.alert.noUrl'));
         setIsSubmitting(false);
         return;
       }
@@ -87,11 +89,11 @@ export default function BatchUrlForm() {
         setResults(result.results);
         setErrors(result.errors);
       } else {
-        alert('批量生成失敗: ' + result.error);
+        alert(t('batch.alert.fail.prefix') + result.error);
       }
     } catch (error) {
       console.error('批量生成錯誤:', error);
-      alert('批量生成失敗，請稍後再試');
+      alert(t('batch.alert.fail.general'));
     } finally {
       setIsSubmitting(false);
     }
@@ -103,13 +105,19 @@ export default function BatchUrlForm() {
       setCopiedIndex(index);
       setTimeout(() => setCopiedIndex(null), 2000);
     } catch (err) {
-      console.error('複製失敗:', err);
+      console.error(t('batch.copy.error'), err);
     }
   };
 
   const downloadResults = () => {
     const csvContent = [
-      ['原始 URL', '短網址', '短碼', '標題', '描述'],
+      [
+        t('batch.csv.headers.original'),
+        t('batch.csv.headers.shortUrl'),
+        t('batch.csv.headers.shortCode'),
+        t('batch.csv.headers.title'),
+        t('batch.csv.headers.description')
+      ],
       ...results.map(result => [
         result.originalUrl,
         result.shortUrl,
@@ -143,10 +151,10 @@ export default function BatchUrlForm() {
           <Upload className="w-8 h-8 text-white" />
         </motion.div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          批量生成短網址
+          {t('batch.title')}
         </h1>
         <p className="text-gray-600">
-          一次最多可生成 10 個短網址
+          {t('batch.subtitle')}
         </p>
       </div>
 
@@ -178,13 +186,13 @@ export default function BatchUrlForm() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      原始 URL *
+                      {t('batch.form.originalUrl')}
                     </label>
                     <input
                       type="url"
                       value={item.url}
                       onChange={(e) => updateUrl(index, 'url', e.target.value)}
-                      placeholder="https://example.com/very-long-url"
+                      placeholder={t('batch.form.placeholder.longUrl')}
                       className="input-field"
                       required
                     />
@@ -192,13 +200,13 @@ export default function BatchUrlForm() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      自定義短碼 (可選)
+                      {t('batch.form.customCode')}
                     </label>
                     <input
                       type="text"
                       value={item.customCode}
                       onChange={(e) => updateUrl(index, 'customCode', e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
-                      placeholder="my-custom-code"
+                      placeholder={t('batch.form.placeholder.customCode')}
                       className="input-field"
                       maxLength={10}
                     />
@@ -206,13 +214,13 @@ export default function BatchUrlForm() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      標題 (可選)
+                      {t('batch.form.title')}
                     </label>
                     <input
                       type="text"
                       value={item.title}
                       onChange={(e) => updateUrl(index, 'title', e.target.value)}
-                      placeholder="為這個鏈接添加標題"
+                      placeholder={t('batch.form.placeholder.title')}
                       className="input-field"
                       maxLength={100}
                     />
@@ -220,13 +228,13 @@ export default function BatchUrlForm() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      描述 (可選)
+                      {t('batch.form.description')}
                     </label>
                     <input
                       type="text"
                       value={item.description}
                       onChange={(e) => updateUrl(index, 'description', e.target.value)}
-                      placeholder="簡短描述"
+                      placeholder={t('batch.form.placeholder.description')}
                       className="input-field"
                       maxLength={200}
                     />
@@ -245,7 +253,7 @@ export default function BatchUrlForm() {
                 className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                添加 URL
+                {t('batch.actions.addUrl')}
               </motion.button>
             </div>
           )}
@@ -253,19 +261,19 @@ export default function BatchUrlForm() {
           {/* 過期時間 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              過期時間 (可選)
+              {t('batch.expires.label')}
             </label>
             <select
               value={expiresIn}
               onChange={(e) => setExpiresIn(e.target.value)}
               className="input-field"
             >
-              <option value="">永久</option>
-              <option value="1">1 天後過期</option>
-              <option value="7">7 天後過期</option>
-              <option value="30">30 天後過期</option>
-              <option value="90">90 天後過期</option>
-              <option value="365">1 年後過期</option>
+              <option value="">{t('batch.expires.permanent')}</option>
+              <option value="1">{t('batch.expires.1day')}</option>
+              <option value="7">{t('batch.expires.7days')}</option>
+              <option value="30">{t('batch.expires.30days')}</option>
+              <option value="90">{t('batch.expires.90days')}</option>
+              <option value="365">{t('batch.expires.1year')}</option>
             </select>
           </div>
 
@@ -275,7 +283,9 @@ export default function BatchUrlForm() {
             className="btn-primary w-full py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitting}
           >
-            {isSubmitting ? '生成中...' : `生成 ${urls.filter(item => item.url.trim()).length} 個短網址`}
+            {isSubmitting
+              ? t('batch.submit.loading')
+              : `${t('batch.submit.labelPrefix')} ${urls.filter(item => item.url.trim()).length} ${t('batch.submit.labelSuffix')}`}
           </motion.button>
         </form>
       ) : (
@@ -283,10 +293,10 @@ export default function BatchUrlForm() {
         <div className="space-y-6">
           {/* 摘要 */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h3 className="font-semibold text-blue-900 mb-2">生成摘要</h3>
+            <h3 className="font-semibold text-blue-900 mb-2">{t('batch.summary.title')}</h3>
             <p className="text-blue-800">
-              成功生成 {results.length} 個短網址
-              {errors.length > 0 && `，${errors.length} 個失敗`}
+              {t('batch.summary.success.prefix')} {results.length} {t('batch.summary.success.suffix')}
+              {errors.length > 0 && `${t('batch.summary.fail.prefix')}${errors.length} ${t('batch.summary.fail.suffix')}`}
             </p>
           </div>
 
@@ -294,13 +304,13 @@ export default function BatchUrlForm() {
           {results.length > 0 && (
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">生成結果</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('batch.results.title')}</h3>
                 <motion.button
                   onClick={downloadResults}
                   className="flex items-center px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  下載 CSV
+                  {t('batch.actions.downloadCsv')}
                 </motion.button>
               </div>
 
@@ -315,7 +325,7 @@ export default function BatchUrlForm() {
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm font-medium text-green-900 mb-1">短網址</p>
+                        <p className="text-sm font-medium text-green-900 mb-1">{t('batch.result.shortUrlLabel')}</p>
                         <p className="font-mono text-green-800 break-all">{result.shortUrl}</p>
                         {result.title && (
                           <p className="text-sm text-green-700 mt-1">{result.title}</p>
@@ -331,7 +341,7 @@ export default function BatchUrlForm() {
                           ) : (
                             <Copy className="w-4 h-4 mr-2" />
                           )}
-                          {copiedIndex === index ? '已複製' : '複製'}
+                          {copiedIndex === index ? t('common.copied') : t('common.copy')}
                         </motion.button>
                         <motion.button
                           onClick={() => window.open(result.shortUrl, '_blank')}
@@ -342,7 +352,7 @@ export default function BatchUrlForm() {
                       </div>
                     </div>
                     <p className="text-sm text-green-600 mt-2 break-all">
-                      原始: {result.originalUrl}
+                      {t('batch.result.originalPrefix')}{result.originalUrl}
                     </p>
                   </motion.div>
                 ))}
@@ -353,13 +363,13 @@ export default function BatchUrlForm() {
           {/* 錯誤結果 */}
           {errors.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-red-900 mb-4">處理失敗</h3>
+              <h3 className="text-lg font-semibold text-red-900 mb-4">{t('batch.errors.title')}</h3>
               <div className="space-y-3">
                 {errors.map((error, index) => (
                   <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-4">
                     <p className="text-sm font-medium text-red-900">URL #{error.index + 1}</p>
                     <p className="text-sm text-red-800 break-all">{error.url}</p>
-                    <p className="text-sm text-red-600 mt-1">錯誤: {error.error}</p>
+                    <p className="text-sm text-red-600 mt-1">{t('batch.errors.prefix')}{error.error}</p>
                   </div>
                 ))}
               </div>
@@ -376,7 +386,7 @@ export default function BatchUrlForm() {
               }}
               className="btn-primary px-6 py-3"
             >
-              重新生成
+              {t('batch.actions.regenerate')}
             </motion.button>
           </div>
         </div>

@@ -7,9 +7,12 @@ import UrlResult from '@/components/UrlResult';
 import { RefreshCw } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { useI18n } from '@/i18n/I18nProvider';
 
 export default function HomePage() {
   const [result, setResult] = useState(null);
+  const { t } = useI18n();
 
   const handleSuccess = (data: any) => {
     setResult(data);
@@ -45,14 +48,15 @@ export default function HomePage() {
             <div className="flex items-center space-x-4">
               <Link href="/batch">
                 <button className="flex items-center px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                  <span className="text-sm font-medium">批量生成</span>
+                  <span className="text-sm font-medium">{t('nav.batch')}</span>
                 </button>
               </Link>
               <Link href="/history">
                 <button className="flex items-center px-4 py-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors">
-                  <span className="text-sm font-medium">歷史記錄</span>
+                  <span className="text-sm font-medium">{t('nav.history')}</span>
                 </button>
               </Link>
+              <LanguageSwitcher />
               {result && (
                 <motion.button
                   onClick={resetForm}
@@ -61,7 +65,7 @@ export default function HomePage() {
                   className="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  新建
+                  {t('nav.new')}
                 </motion.button>
               )}
             </div>
@@ -82,18 +86,16 @@ export default function HomePage() {
       <footer className="bg-white/50 backdrop-blur-sm border-t border-gray-200 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-600">
-            <p className="mb-2">
-              © 2025 TinyLink. 簡潔、快速、私密的短網址服務.
-            </p>
+            <p className="mb-2">©2025 TinyLink.</p>
             <div className="flex justify-center space-x-6 text-sm">
               <Link href="/privacy" className="hover:text-primary-600 transition-colors">
-                隱私政策
+                {t('footer.privacy')}
               </Link>
               <Link href="/terms" className="hover:text-primary-600 transition-colors">
-                服務條款
+                {t('footer.terms')}
               </Link>
               <Link href="/contact" className="hover:text-primary-600 transition-colors">
-                聯繫我們
+                {t('footer.contact')}
               </Link>
             </div>
           </div>

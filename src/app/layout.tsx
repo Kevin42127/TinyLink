@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Providers from '@/components/Providers'
+import { cookies } from 'next/headers'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -34,11 +36,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const cookieStore = cookies();
+  const cookieLocale = cookieStore.get('locale')?.value;
+  const initialLocale = cookieLocale === 'en' || cookieLocale === 'zh' ? cookieLocale : 'en';
+  const htmlLang = initialLocale === 'en' ? 'en' : 'zh-TW';
   return (
-    <html lang="zh-TW">
+    <html lang={htmlLang}>
       <body className={inter.className}>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-          {children}
+          <Providers initialLocale={initialLocale}>
+            {children}
+          </Providers>
         </div>
       </body>
     </html>

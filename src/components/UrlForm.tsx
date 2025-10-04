@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Link, Calendar, FileText, Sparkles } from 'lucide-react';
 import Image from 'next/image';
+import { useI18n } from '@/i18n/I18nProvider';
 
 interface UrlFormProps {
   onSuccess: (data: any) => void;
 }
 
 export default function UrlForm({ onSuccess }: UrlFormProps) {
+  const { t } = useI18n();
   const [formData, setFormData] = useState({
     url: '',
     customCode: '',
@@ -66,10 +68,10 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
           description: ''
         });
       } else {
-        setError(result.error || '創建短網址失敗');
+        setError(result.error || t('form.error.createFailed'));
       }
     } catch (err) {
-      setError('網絡錯誤，請稍後重試');
+      setError(t('form.error.network'));
     } finally {
       setIsLoading(false);
     }
@@ -103,10 +105,10 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
           />
         </motion.div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          TinyLink
+          {t('app.title')}
         </h1>
         <p className="text-gray-600">
-          簡潔、快速、私密的短網址服務
+          {t('app.tagline')}
         </p>
       </div>
 
@@ -114,7 +116,7 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
         {/* URL 輸入 */}
         <div>
           <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-2">
-            原始 URL *
+            {t('form.url.label')}
           </label>
           <div className="relative">
             <input
@@ -133,7 +135,7 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
         {/* 自定義短碼 */}
         <div>
           <label htmlFor="customCode" className="block text-sm font-medium text-gray-700 mb-2">
-            自定義短碼 (可選)
+            {t('form.customCode.label')}
           </label>
           <div className="relative">
             <input
@@ -148,14 +150,14 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
             <Sparkles className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            4-10 位字母數字組合，留空則自動生成
+            {t('form.customCode.hint')}
           </p>
         </div>
 
         {/* 過期時間 */}
         <div className="mt-2">
           <label htmlFor="expiresIn" className="block text-sm font-medium text-gray-700 mb-2">
-            過期時間 (可選)
+            {t('form.expires.label')}
           </label>
           <div className="relative">
             <select
@@ -164,12 +166,12 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
               onChange={(e) => handleInputChange('expiresIn', e.target.value)}
               className="input-field pl-12"
             >
-              <option value="">永久</option>
-              <option value="1">1 天後過期</option>
-              <option value="7">7 天後過期</option>
-              <option value="30">30 天後過期</option>
-              <option value="90">90 天後過期</option>
-              <option value="365">1 年後過期</option>
+              <option value="">{t('form.expires.permanent')}</option>
+              <option value="1">{t('form.expires.1d')}</option>
+              <option value="7">{t('form.expires.7d')}</option>
+              <option value="30">{t('form.expires.30d')}</option>
+              <option value="90">{t('form.expires.90d')}</option>
+              <option value="365">{t('form.expires.365d')}</option>
             </select>
             <Calendar className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
           </div>
@@ -178,7 +180,7 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
         {/* 標題 */}
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-            標題 (可選)
+            {t('form.title.label')}
           </label>
           <div className="relative">
             <input
@@ -186,7 +188,7 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
               id="title"
               value={formData.title}
               onChange={(e) => handleInputChange('title', e.target.value)}
-              placeholder="為這個鏈接添加標題"
+              placeholder={t('form.title.placeholder')}
               className="input-field pl-12"
               maxLength={100}
             />
@@ -197,13 +199,13 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
         {/* 描述 */}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            描述 (可選)
+            {t('form.description.label')}
           </label>
           <textarea
             id="description"
             value={formData.description}
             onChange={(e) => handleInputChange('description', e.target.value)}
-            placeholder="添加鏈接描述..."
+            placeholder={t('form.description.placeholder')}
             className="input-field pl-4 pt-3 resize-none"
             rows={3}
             maxLength={500}
@@ -230,10 +232,10 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
           {isLoading ? (
             <div className="flex items-center justify-center">
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              生成中...
+              {t('form.submit.loading')}
             </div>
           ) : (
-            '生成短網址'
+            t('form.submit')
           )}
         </motion.button>
       </form>

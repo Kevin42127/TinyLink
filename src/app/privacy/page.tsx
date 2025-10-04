@@ -3,8 +3,10 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Shield, Eye, Lock, Database, UserCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useI18n } from '@/i18n/I18nProvider';
 
 export default function PrivacyPage() {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* 導航 */}
@@ -15,7 +17,7 @@ export default function PrivacyPage() {
             className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
-            返回首頁
+            {t('common.backHome')}
           </Link>
         </div>
       </nav>
@@ -36,15 +38,9 @@ export default function PrivacyPage() {
             >
               <Shield className="w-8 h-8 text-green-600" />
             </motion.div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              TinyLink 隱私政策
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              TinyLink 承諾保護您的隱私。本短網址服務不收集任何個人信息，不追蹤用戶行為，完全免費且無廣告。
-            </p>
-            <p className="text-sm text-gray-500 mt-4">
-              最後更新：2025年9月
-            </p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('privacy.title')}</h1>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">{t('privacy.subtitle')}</p>
+            <p className="text-sm text-gray-500 mt-4">{t('privacy.lastUpdated')}</p>
           </div>
 
           {/* 內容 */}
@@ -53,22 +49,20 @@ export default function PrivacyPage() {
             <section>
               <div className="flex items-center mb-4">
                 <Eye className="w-6 h-6 text-blue-600 mr-3" />
-                <h2 className="text-2xl font-bold text-gray-900">信息收集</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('privacy.collect.title')}</h2>
               </div>
               <div className="space-y-4 text-gray-700">
                 <p>
-                  <strong>我們不收集任何個人信息。</strong>
+                  <strong>{t('privacy.collect.p1')}</strong>
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li><strong>URL 數據</strong>：僅存儲您提供的原始 URL 和生成的短網址</li>
-                  <li><strong>不收集</strong>：IP 地址、瀏覽器信息、用戶身份等</li>
-                  <li><strong>不追蹤</strong>：用戶行為、點擊數據、訪問時間等</li>
-                  <li><strong>可選信息</strong>：標題和描述僅用於顯示，不會用於其他目的</li>
+                  <li>{t('privacy.collect.bullets.urlData')}</li>
+                  <li>{t('privacy.collect.bullets.noCollect')}</li>
+                  <li>{t('privacy.collect.bullets.noTrack')}</li>
+                  <li>{t('privacy.collect.bullets.optional')}</li>
                 </ul>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
-                  <p className="text-green-800 font-medium">
-                    ✅ 我們不會收集、存儲或分析任何可以用來識別您身份的個人信息。
-                  </p>
+                  <p className="text-green-800 font-medium">{t('privacy.collect.note')}</p>
                 </div>
               </div>
             </section>
@@ -77,21 +71,19 @@ export default function PrivacyPage() {
             <section>
               <div className="flex items-center mb-4">
                 <Database className="w-6 h-6 text-green-600 mr-3" />
-                <h2 className="text-2xl font-bold text-gray-900">信息使用</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('privacy.use.title')}</h2>
               </div>
               <div className="space-y-4 text-gray-700">
-                <p><strong>我們不使用任何個人信息。</strong></p>
+                <p><strong>{t('privacy.use.p1')}</strong></p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>僅用於提供短網址生成和重定向服務</li>
-                  <li>不會用於廣告投放或營銷</li>
-                  <li>不會分享給第三方</li>
-                  <li>不會用於用戶行為分析</li>
-                  <li>不會用於建立用戶檔案</li>
+                  <li>{t('privacy.use.bullets.onlyService')}</li>
+                  <li>{t('privacy.use.bullets.noAds')}</li>
+                  <li>{t('privacy.use.bullets.noShare')}</li>
+                  <li>{t('privacy.use.bullets.noAnalysis')}</li>
+                  <li>{t('privacy.use.bullets.noProfile')}</li>
                 </ul>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                  <p className="text-blue-800 font-medium">
-                    🚫 我們不投放廣告，不收集數據用於營銷，完全免費使用。
-                  </p>
+                  <p className="text-blue-800 font-medium">{t('privacy.use.note')}</p>
                 </div>
               </div>
             </section>
@@ -100,20 +92,18 @@ export default function PrivacyPage() {
             <section>
               <div className="flex items-center mb-4">
                 <Lock className="w-6 h-6 text-purple-600 mr-3" />
-                <h2 className="text-2xl font-bold text-gray-900">數據保護</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('privacy.protect.title')}</h2>
               </div>
               <div className="space-y-4 text-gray-700">
-                <p><strong>我們採取以下措施保護您的數據：</strong></p>
+                <p><strong>{t('privacy.protect.p1')}</strong></p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>使用加密技術保護數據傳輸</li>
-                  <li>定期進行安全審計和更新</li>
-                  <li>建立數據備份和恢復機制</li>
-                  <li>最小化數據收集原則</li>
+                  <li>{t('privacy.protect.bullets.encrypt')}</li>
+                  <li>{t('privacy.protect.bullets.audit')}</li>
+                  <li>{t('privacy.protect.bullets.backup')}</li>
+                  <li>{t('privacy.protect.bullets.minimize')}</li>
                 </ul>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                  <p className="text-blue-800 font-medium">
-                    🔐 由於不收集個人信息，數據保護主要針對短網址數據本身。
-                  </p>
+                  <p className="text-blue-800 font-medium">{t('privacy.protect.note')}</p>
                 </div>
               </div>
             </section>
@@ -122,96 +112,83 @@ export default function PrivacyPage() {
             <section>
               <div className="flex items-center mb-4">
                 <UserCheck className="w-6 h-6 text-orange-600 mr-3" />
-                <h2 className="text-2xl font-bold text-gray-900">數據共享</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('privacy.share.title')}</h2>
               </div>
               <div className="space-y-4 text-gray-700">
-                <p>
-                  <strong>我們不與任何人分享任何數據。</strong>
-                </p>
+                <p><strong>{t('privacy.share.p1')}</strong></p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>不向第三方出售或分享數據</li>
-                  <li>不與廣告商或營銷公司合作</li>
-                  <li>不向政府機構提供用戶數據（除非法律強制要求）</li>
-                  <li>不與其他服務提供商分享信息</li>
+                  <li>{t('privacy.share.bullets.noSell')}</li>
+                  <li>{t('privacy.share.bullets.noAds')}</li>
+                  <li>{t('privacy.share.bullets.noGov')}</li>
+                  <li>{t('privacy.share.bullets.noProviders')}</li>
                 </ul>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
-                  <p className="text-green-800 font-medium">
-                    🔒 您的數據完全屬於您，我們不會與任何人分享。
-                  </p>
+                  <p className="text-green-800 font-medium">{t('privacy.share.note')}</p>
                 </div>
               </div>
             </section>
 
             {/* 數據保留 */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">數據保留</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('privacy.retention.title')}</h2>
               <div className="space-y-4 text-gray-700">
                 <p>
-                  <strong>我們只保留必要的短網址數據。</strong>
+                  <strong>{t('privacy.retention.p1')}</strong>
                 </p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>短網址數據：根據您設置的過期時間或永久保留</li>
-                  <li>不保留：用戶身份、IP 地址、瀏覽器信息等</li>
-                  <li>不保留：訪問日誌、用戶行為數據等</li>
-                  <li>不保留：任何可以用來識別您的個人信息</li>
+                  <li>{t('privacy.retention.bullets.keepShort')}</li>
+                  <li>{t('privacy.retention.bullets.noIdentity')}</li>
+                  <li>{t('privacy.retention.bullets.noLogs')}</li>
+                  <li>{t('privacy.retention.bullets.noPII')}</li>
                 </ul>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
-                  <p className="text-blue-800 font-medium">
-                    ⏰ 我們只保留短網址本身，不保留任何個人信息。
-                  </p>
+                  <p className="text-blue-800 font-medium">{t('privacy.retention.note')}</p>
                 </div>
               </div>
             </section>
 
             {/* 用戶權利 */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">您的權利</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('privacy.rights.title')}</h2>
               <div className="space-y-4 text-gray-700">
-                <p><strong>由於我們不收集個人信息，您的權利包括：</strong></p>
+                <p><strong>{t('privacy.rights.p1')}</strong></p>
                 <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>隨時刪除您創建的短網址</li>
-                  <li>設置短網址的過期時間</li>
-                  <li>完全匿名使用服務</li>
-                  <li>不受任何廣告或營銷干擾</li>
-                  <li>免費使用所有功能</li>
+                  <li>{t('privacy.rights.bullets.delete')}</li>
+                  <li>{t('privacy.rights.bullets.expire')}</li>
+                  <li>{t('privacy.rights.bullets.anonymous')}</li>
+                  <li>{t('privacy.rights.bullets.noAds')}</li>
+                  <li>{t('privacy.rights.bullets.free')}</li>
                 </ul>
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
-                  <p className="text-green-800 font-medium">
-                    🆓 完全免費使用，無需註冊，無需提供個人信息。
-                  </p>
+                  <p className="text-green-800 font-medium">{t('privacy.rights.note')}</p>
                 </div>
               </div>
             </section>
 
             {/* 聯繫我們 */}
             <section className="bg-gray-50 rounded-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">聯繫我們</h2>
-              <p className="text-gray-700 mb-4">
-                如果您對本隱私政策有任何疑問或需要行使您的權利，請通過以下方式聯繫我們：
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('privacy.contact.title')}</h2>
+              <p className="text-gray-700 mb-4">{t('privacy.contact.p1')}</p>
               <div className="space-y-2">
                 <p className="text-gray-700">
-                  <strong>電子郵件</strong>：
+                  <strong>{t('privacy.contact.email.label')}</strong>：
                   <a 
-                    href="mailto:tyouxipindao@gmail.com?subject=TinyLink 隱私政策相關問題"
+                    href={`mailto:${t('privacy.contact.email.address')}?subject=${t('privacy.contact.email.subject')}`}
                     className="text-blue-600 hover:text-blue-800 underline ml-1"
                   >
-                    tyouxipindao@gmail.com
+                    {t('privacy.contact.email.address')}
                   </a>
                 </p>
                 <p className="text-gray-700">
-                  <strong>聯繫頁面</strong>：<Link href="/contact" className="text-blue-600 hover:text-blue-800">點擊這裡</Link>
+                  <strong>{t('privacy.contact.link.title')}</strong>：<Link href="/contact" className="text-blue-600 hover:text-blue-800">{t('privacy.contact.link.text')}</Link>
                 </p>
               </div>
             </section>
 
             {/* 政策更新 */}
             <section>
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">政策更新</h2>
-              <p className="text-gray-700">
-                我們可能會不時更新本隱私政策。重大變更將通過電子郵件或網站通知您。
-                建議您定期查看本政策以了解最新變更。
-              </p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('privacy.update.title')}</h2>
+              <p className="text-gray-700">{t('privacy.update.p1')}</p>
             </section>
           </div>
         </motion.div>

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ExternalLink, Copy, Calendar, Clock, Eye, RefreshCw, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useI18n } from '@/i18n/I18nProvider';
 
 interface HistoryItem {
   shortCode: string;
@@ -31,6 +32,7 @@ interface HistoryResponse {
 }
 
 export default function HistoryPage() {
+  const { t, locale } = useI18n();
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,15 +70,15 @@ export default function HistoryPage() {
         }
         setPagination(data.data.pagination);
       } else {
-        setError(data.error || '獲取歷史記錄失敗');
+        setError(data.error || t('history.error.fetch'));
       }
     } catch (err) {
-      console.error('獲取歷史記錄錯誤:', err);
-      setError(`網路錯誤，請稍後再試: ${err instanceof Error ? err.message : '未知錯誤'}`);
+      console.error('History fetch error:', err);
+      setError(`${t('history.error.fetchNetworkPrefix')}: ${err instanceof Error ? err.message : t('common.unknownError')}`);
     } finally {
       setLoading(false);
     }
-  }, [pagination.limit]);
+  }, [pagination.limit, t]);
 
   useEffect(() => {
     fetchHistory();
@@ -112,7 +114,8 @@ export default function HistoryPage() {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('zh-TW', {
+    const loc = locale === 'en' ? 'en-US' : 'zh-TW';
+    return new Date(dateString).toLocaleString(loc, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -126,10 +129,16 @@ export default function HistoryPage() {
     const date = new Date(dateString);
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return '剛剛';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} 分鐘前`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} 小時前`;
-    return `${Math.floor(diffInSeconds / 86400)} 天前`;
+    if (diffInSeconds < 60) return locale === 'en' ? 'just now' : '剛剛';
+    if (diffInSeconds < 3600) return locale === 'en'
+      ? `${Math.floor(diffInSeconds / 60)} minutes ago`
+      : `${Math.floor(diffInSeconds / 60)} 分鐘前`;
+    if (diffInSeconds < 86400) return locale === 'en'
+      ? `${Math.floor(diffInSeconds / 3600)} hours ago`
+      : `${Math.floor(diffInSeconds / 3600)} 小時前`;
+    return locale === 'en'
+      ? `${Math.floor(diffInSeconds / 86400)} days ago`
+      : `${Math.floor(diffInSeconds / 86400)} 天前`;
   };
 
   const isExpired = (expiresAt?: string) => {
@@ -160,11 +169,11 @@ export default function HistoryPage() {
           total: prev.total - 1,
         }));
       } else {
-        setError(data.error || '刪除失敗');
+        setError(data.error || t('history.error.delete'));
       }
     } catch (err) {
-      console.error('刪除錯誤:', err);
-      setError('網路錯誤，刪除失敗');
+      console.error('Delete error:', err);
+      setError(t('history.error.deleteNetwork'));
     } finally {
       setDeletingItems(prev => {
         const newSet = new Set(prev);
@@ -203,11 +212,11 @@ export default function HistoryPage() {
         }));
         // 可以在這裡添加成功提示
       } else {
-        setError(data.error || '批量刪除失敗');
+        setError(data.error || t('history.error.bulkDelete'));
       }
     } catch (err) {
-      console.error('批量刪除錯誤:', err);
-      setError('網路錯誤，批量刪除失敗');
+      console.error('Bulk delete error:', err);
+      setError(t('history.error.bulkDeleteNetwork'));
     } finally {
       setBulkDeleting(false);
     }
@@ -231,7 +240,7 @@ export default function HistoryPage() {
       >
         <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8">
           <ArrowLeft className="w-5 h-5 mr-2" />
-          返回首頁
+          {t('common.backHome')}
         </Link>
 
         <div className="text-center mb-8">
@@ -244,17 +253,17 @@ export default function HistoryPage() {
             <Clock className="w-8 h-8 text-white" />
           </motion.div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            短網址歷史記錄
+            {t('history.title')}
           </h1>
           <p className="text-gray-600">
-            查看最近生成的短網址記錄
+            {t('history.subtitle')}
           </p>
         </div>
 
         {/* 操作欄 */}
         <div className="flex justify-between items-center mb-6">
           <div className="text-sm text-gray-600">
-            共 {pagination.total} 條記錄
+            {t('history.total.prefix')} {pagination.total} {t('history.total.suffix')}
           </div>
           <div className="flex items-center space-x-3">
             <motion.button
@@ -263,7 +272,7 @@ export default function HistoryPage() {
               className="flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:opacity-50"
             >
               <Trash2 className="w-4 h-4 mr-2" />
-              刪除全部
+              {t('history.actions.deleteAll')}
             </motion.button>
             <motion.button
               onClick={refreshHistory}
@@ -271,7 +280,7 @@ export default function HistoryPage() {
               className="flex items-center px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              刷新
+              {t('history.actions.refresh')}
             </motion.button>
           </div>
         </div>
@@ -316,7 +325,7 @@ export default function HistoryPage() {
                   {/* 短網址 */}
                   <div className="flex items-center space-x-3 mb-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-700 mb-1">短網址</p>
+                      <p className="text-sm font-medium text-gray-700 mb-1">{t('history.list.shortUrl')}</p>
                       <p className="font-mono text-blue-600 break-all">
                         {item.shortUrl}
                       </p>
@@ -340,7 +349,7 @@ export default function HistoryPage() {
 
                   {/* 原始網址 */}
                   <div className="mb-3">
-                    <p className="text-sm font-medium text-gray-700 mb-1">原始網址</p>
+                    <p className="text-sm font-medium text-gray-700 mb-1">{t('history.list.originalUrl')}</p>
                     <div className="flex items-center space-x-3">
                       <p className="text-gray-600 break-all flex-1 min-w-0">
                         {item.originalUrl}
@@ -360,7 +369,7 @@ export default function HistoryPage() {
                   <div className="flex items-center space-x-6 text-sm text-gray-500">
                     <div className="flex items-center">
                       <Eye className="w-4 h-4 mr-1" />
-                      {item.clickCount} 次點擊
+                      {item.clickCount} {t('history.list.clicks')}
                     </div>
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
@@ -369,7 +378,7 @@ export default function HistoryPage() {
                     {item.expiresAt && (
                       <div className={`flex items-center ${isExpired(item.expiresAt) ? 'text-red-500' : 'text-orange-500'}`}>
                         <Clock className="w-4 h-4 mr-1" />
-                        {isExpired(item.expiresAt) ? '已過期' : formatRelativeTime(item.expiresAt) + ' 過期'}
+                        {isExpired(item.expiresAt) ? t('history.list.expired') : `${formatRelativeTime(item.expiresAt)} ${locale === 'en' ? 'expires' : '過期'}`}
                       </div>
                     )}
                   </div>
@@ -398,23 +407,23 @@ export default function HistoryPage() {
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="font-medium text-gray-700 mb-1">創建時間</p>
+                      <p className="font-medium text-gray-700 mb-1">{t('history.list.createdAt')}</p>
                       <p className="text-gray-600">{formatDate(item.createdAt)}</p>
                     </div>
                     {item.expiresAt && (
                       <div>
-                        <p className="font-medium text-gray-700 mb-1">過期時間</p>
+                        <p className="font-medium text-gray-700 mb-1">{t('history.list.expiresAt')}</p>
                         <p className="text-gray-600">{formatDate(item.expiresAt)}</p>
                       </div>
                     )}
                     <div>
-                      <p className="font-medium text-gray-700 mb-1">短碼</p>
+                      <p className="font-medium text-gray-700 mb-1">{t('history.list.shortCode')}</p>
                       <p className="text-gray-600 font-mono">{item.shortCode}</p>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-700 mb-1">狀態</p>
-                      <p className={`${isExpired(item.expiresAt) ? 'text-red-600' : 'text-green-600'}`}>
-                        {isExpired(item.expiresAt) ? '已過期' : '有效'}
+                      <p className="font-medium text-gray-700 mb-1">{t('history.list.status')}</p>
+                      <p className={`${isExpired(item.expiresAt) ? 'text-red-600' : 'text-green-600'}`}> 
+                        {isExpired(item.expiresAt) ? t('history.list.expired') : t('history.list.valid')}
                       </p>
                     </div>
                   </div>
@@ -435,23 +444,23 @@ export default function HistoryPage() {
               {loading ? (
                 <div className="flex items-center">
                   <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                  加載中...
+                  {t('history.loading')}
                 </div>
               ) : (
-                '加載更多'
+                t('history.loadMore')
               )}
-            </motion.button>
-          </div>
-        )}
+          </motion.button>
+        </div>
+      )}
 
         {/* 空狀態 */}
         {!loading && history.length === 0 && (
           <div className="text-center py-12">
             <Clock className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">暫無歷史記錄</h3>
-            <p className="text-gray-600 mb-6">開始創建你的第一個短網址吧！</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('history.empty.title')}</h3>
+            <p className="text-gray-600 mb-6">{t('history.empty.description')}</p>
             <Link href="/" className="btn-primary">
-              創建短網址
+              {t('history.empty.cta')}
             </Link>
           </div>
         )}
@@ -475,17 +484,17 @@ export default function HistoryPage() {
                   <Trash2 className="w-6 h-6 text-red-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  確認刪除
+                  {t('history.dialog.single.title')}
                 </h3>
                 <p className="text-gray-600 mb-6">
-                  確定要刪除這個短網址嗎？此操作無法撤銷。
+                  {t('history.dialog.single.message')}
                 </p>
                 <div className="flex space-x-3">
                   <motion.button
                     onClick={cancelDelete}
                     className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                   >
-                    取消
+                    {t('history.dialog.single.cancel')}
                   </motion.button>
                   <motion.button
                     onClick={() => deleteUrl(showDeleteConfirm)}
@@ -495,10 +504,10 @@ export default function HistoryPage() {
                     {deletingItems.has(showDeleteConfirm) ? (
                       <div className="flex items-center justify-center">
                         <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                        刪除中...
+                        {t('history.dialog.single.deleting')}
                       </div>
                     ) : (
-                      '確認刪除'
+                      t('history.dialog.single.confirm')
                     )}
                   </motion.button>
                 </div>
@@ -526,20 +535,20 @@ export default function HistoryPage() {
                   <Trash2 className="w-6 h-6 text-red-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  確認刪除所有記錄
+                  {t('history.dialog.bulk.title')}
                 </h3>
                 <p className="text-gray-600 mb-4">
-                  確定要刪除所有 {pagination.total} 條歷史記錄嗎？
+                  {t('history.dialog.bulk.message.prefix')} {pagination.total} {t('history.dialog.bulk.message.suffix')}
                 </p>
                 <p className="text-sm text-red-600 mb-6">
-                  ⚠️ 此操作無法撤銷，所有短網址將永久失效！
+                  {t('history.dialog.bulk.warning')}
                 </p>
                 <div className="flex space-x-3">
                   <motion.button
                     onClick={cancelBulkDelete}
                     className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                   >
-                    取消
+                    {t('history.dialog.bulk.cancel')}
                   </motion.button>
                   <motion.button
                     onClick={deleteAllUrls}
@@ -549,10 +558,10 @@ export default function HistoryPage() {
                     {bulkDeleting ? (
                       <div className="flex items-center justify-center">
                         <RefreshCw className="w-4 h-4 animate-spin mr-2" />
-                        刪除中...
+                        {t('history.dialog.bulk.deleting')}
                       </div>
                     ) : (
-                      '確認刪除全部'
+                      t('history.dialog.bulk.confirm')
                     )}
                   </motion.button>
                 </div>
